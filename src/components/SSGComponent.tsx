@@ -1,4 +1,3 @@
-import SSGComponent from "@/components/SSGComponent";
 import type { InferGetStaticPropsType, GetStaticProps } from "next";
 
 type Repo = {
@@ -15,13 +14,8 @@ export const getStaticProps = (async () => {
   repo: Repo;
 }>;
 
-export default function Page({
+export default function SSGComponent({
   repo,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  return (
-    <div>
-      <p>Post Page {repo.stargazers_count}</p>
-      <SSGComponent repo={repo} />
-    </div>
-  );
+  return <div>SSGComponent {repo.stargazers_count}</div>;
 }

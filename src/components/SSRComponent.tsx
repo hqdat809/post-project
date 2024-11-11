@@ -1,4 +1,3 @@
-import SSRComponent from "@/components/SSRComponent";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 type Repo = {
@@ -14,13 +13,12 @@ export const getServerSideProps = (async () => {
   return { props: { repo } };
 }) satisfies GetServerSideProps<{ repo: Repo }>;
 
-export default function Page({
+export default function SSRComponent({
   repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <main>
-      <p> Cart pages {repo.stargazers_count}</p>
-      <SSRComponent repo={repo} />
+      <p> server side component {repo.name} </p>
     </main>
   );
 }
