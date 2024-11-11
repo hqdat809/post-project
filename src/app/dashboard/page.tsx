@@ -5,7 +5,7 @@ export const dynamicParams = true;
 export default function Page() {
   return (
     <div>
-      <p>Dashboard Page </p>
+      <p>{new Date().toUTCString()}</p>
       <ClientComponent />
     </div>
   );
