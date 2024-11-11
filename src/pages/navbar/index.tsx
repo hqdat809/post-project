@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <div>
       <p>Nav Page </p>
-      <Link href="/shop">Shop</Link>
+      <Link href="/category">category</Link>
     </div>
   );
 }
