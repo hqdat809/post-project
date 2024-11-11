@@ -1,4 +1,3 @@
-import SSGComponent from "@/components/SSGComponent";
 import type { InferGetStaticPropsType, GetStaticProps } from "next";
 
 type Repo = {
@@ -21,7 +20,6 @@ export default function Page({
   return (
     <div>
       <p>Profile Page {repo.stargazers_count}</p>
-      <SSGComponent repo={repo} />
     </div>
   );
 }

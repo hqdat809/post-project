@@ -1,4 +1,3 @@
-import SSRComponent from "@/components/SSRComponent";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
 type Repo = {
@@ -20,7 +19,6 @@ export default function Page({
   return (
     <main>
       <p> Shop pages {repo.stargazers_count}</p>
-      <SSRComponent repo={repo} />
     </main>
   );
 }

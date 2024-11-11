@@ -1,4 +1,4 @@
-import SSGComponent from "@/components/SSGComponent";
+import ClientComponent from "@/component/ClientComponent";
 import type { InferGetStaticPropsType, GetStaticProps } from "next";
 
 type Repo = {
@@ -21,7 +21,7 @@ export default function Page({
   return (
     <div>
       <p>Post Page {repo.stargazers_count}</p>
-      <SSGComponent repo={repo} />
+      <ClientComponent />
     </div>
   );
 }
