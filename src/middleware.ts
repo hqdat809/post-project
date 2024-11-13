@@ -8,46 +8,31 @@ interface AuthenticatedRequest extends NextRequest {
   };
 }
 
-let redirectToLogin = false;
-
 export async function middleware(req: NextRequest) {
-  let token: string | undefined;
+  const token: string[] = [];
 
   // get token from header if cookie has not been set
   if (req.cookies.has("token")) {
-    token = req.cookies.get("token")?.value;
+    token.push(req.cookies.get("token")?.value || "");
   } else if (req.headers.get("Authorization")?.startsWith("Bearer ")) {
-    token = req.headers.get("Authorization")?.substring(7);
+    token.push(req.headers.get("Authorization")?.substring(7) || "");
   }
 
-  if (
-    req.nextUrl.pathname.startsWith("/login") &&
-    (!token || redirectToLogin)
-  ) {
+  if (req.nextUrl.pathname.startsWith("/login") && !token[0]) {
     return;
-  }
-
-  // Server
-  if (
-    !token &&
-    (req.nextUrl.pathname.startsWith("/api/users") ||
-      req.nextUrl.pathname.startsWith("/api/auth/logout"))
-  ) {
-    return getErrorResponse(401, "You are not login. Please login");
   }
 
   const response = NextResponse.next();
 
-  //   Check có token không? nếu không có hoặc ko valid thì redirect về login page
+  //   Check có token và có valid không? nếu không có hoặc ko valid thì redirect về login page?
   try {
-    if (token) {
-      const { sub } = await verifyJWT<{ sub: string }>(token);
+    if (token[0]) {
+      const { sub } = await verifyJWT<{ sub: string }>(token[0]);
       response.headers.set("X-USER-ID", sub);
       (req as AuthenticatedRequest).user = { id: sub };
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    redirectToLogin = true;
     if (req.nextUrl.pathname.startsWith("/api")) {
       return getErrorResponse(
         401,
@@ -56,9 +41,16 @@ export async function middleware(req: NextRequest) {
       );
     }
 
-    return NextResponse.redirect(
-      new URL(`/login?${new URLSearchParams({ error: "badauth" })}`, req.url)
-    );
+    return NextResponse.redirect(new URL(`/login`, req.url));
+  }
+
+  // Server
+  if (
+    !token[0] &&
+    (req.nextUrl.pathname.startsWith("/api/users") ||
+      req.nextUrl.pathname.startsWith("/api/auth/logout"))
+  ) {
+    return getErrorResponse(401, "You are not login. Please login");
   }
 
   const authUser = (req as AuthenticatedRequest).user;
@@ -68,7 +60,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Redirect to login page if
-  if (req.url.includes("/login") && authUser && token) {
+  if (req.url.includes("/login") && authUser && token[0]) {
     return NextResponse.redirect(new URL("/profile", req.url));
   }
 
